@@ -104,8 +104,12 @@ export const Form = ({ onSave }) => {
   return (
     <Drawer open={open}>
       <DrawerTrigger asChild>
-        <div className="p-2 fixed bottom-1 right-1">
-          <Button className="text-2xl size-14 w-44 justify-center" onClick={handleOpen}>
+        <div className="p-2 pb-4 fixed bottom-1 right-1">
+          <Button
+            variant="default"
+            className="text-2xl size-14 w-44 justify-center"
+            onClick={handleOpen}
+          >
             <NotebookPen className="size-6" />
             Registrar
           </Button>
@@ -126,7 +130,6 @@ export const Form = ({ onSave }) => {
                   <div className="grid gap-2">
                     <Label htmlFor="glicemia">Glicemia (mg/dL)</Label>
                     <Input
-                      autoFocus
                       tabIndex={1}
                       maxLength={3}
                       disabled={saving}
