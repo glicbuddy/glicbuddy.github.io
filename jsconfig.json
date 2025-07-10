@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es2024",
+    "jsx": "react",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.js", "src/**/*.jsx", "tests/**/*.js", "tests/**/*.jsx"],
+  "exclude": ["node_modules"]
+}

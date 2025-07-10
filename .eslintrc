@@ -1,0 +1,20 @@
+{
+  "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["import", "jest"],
+  "parserOptions": {
+    "ecmaVersion": 2024
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    "**/*.css",
+    "**/*.html",
+    "**/*.json",
+    "coverage/**",
+    "analyze/**"
+  ],
+  "env": {
+    "jest/globals": true,
+    "browser": true,
+    "node": true
+  }
+}
