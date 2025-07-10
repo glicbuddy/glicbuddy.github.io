@@ -102,7 +102,7 @@ export const Form = ({ onSave }) => {
   }
 
   return (
-    <Drawer open={open}>
+    <Drawer open={open} repositionInputs={false}>
       <DrawerTrigger asChild>
         <div className="p-2 pb-4 fixed bottom-1 right-1">
           <Button
