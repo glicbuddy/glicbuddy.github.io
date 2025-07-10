@@ -16,6 +16,7 @@ import { useState } from 'react'
 import { monotonicFactory } from 'ulid'
 
 export const Form = ({ onSave }) => {
+  const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
   const [open, setOpen] = useState(false)
   const ulid = monotonicFactory()
@@ -28,6 +29,7 @@ export const Form = ({ onSave }) => {
   }
 
   const handleOpen = () => {
+    setBlank(false)
     setOpen(true)
     setSaving(false)
     clearForm()
@@ -35,24 +37,32 @@ export const Form = ({ onSave }) => {
 
   const handleClose = () => {
     clearForm()
+    setBlank(false)
     setSaving(false)
     setOpen(false)
   }
 
   const handleSubmit = () => {
     setSaving(true)
+    setBlank(false)
+
+    const glicemiaEl = document.getElementById('glicemia')
+    const carboEl = document.getElementById('carbo')
+    const insuRapidaEl = document.getElementById('insuRapida')
+    const insuBasalEl = document.getElementById('insuBasal')
+
+    const glicemia = toUnsignedInt(glicemiaEl.value)
+    const carbo = toUnsignedInt(carboEl.value)
+    const insuRapida = toUnsignedInt(insuRapidaEl.value)
+    const insuBasal = toUnsignedInt(insuBasalEl.value)
+
+    if (glicemia === 0 && carbo === 0 && insuRapida === 0 && insuBasal === 0) {
+      setSaving(false)
+      setBlank(true)
+      return false
+    }
 
     setTimeout(() => {
-      const glicemiaEl = document.getElementById('glicemia')
-      const carboEl = document.getElementById('carbo')
-      const insuRapidaEl = document.getElementById('insuRapida')
-      const insuBasalEl = document.getElementById('insuBasal')
-
-      const glicemia = toUnsignedInt(glicemiaEl.value)
-      const carbo = toUnsignedInt(carboEl.value)
-      const insuRapida = toUnsignedInt(insuRapidaEl.value)
-      const insuBasal = toUnsignedInt(insuBasalEl.value)
-
       const dataHora = new Date().toISOString()
 
       if (insuRapida > 0 && insuBasal > 0) {
@@ -94,7 +104,7 @@ export const Form = ({ onSave }) => {
   return (
     <Drawer open={open}>
       <DrawerTrigger asChild>
-        <div className="px-4 py-2 fixed bottom-1 right-1">
+        <div className="p-2 fixed bottom-1 right-1">
           <Button className="text-2xl size-14 w-44 justify-center" onClick={handleOpen}>
             <NotebookPen className="size-6" />
             Registrar
@@ -107,6 +117,11 @@ export const Form = ({ onSave }) => {
             <Card className="w-full max-w-sm justify-start mx-auto">
               <CardContent>
                 <DrawerTitle className="text-center mb-4">Novo registro</DrawerTitle>
+                {blank ? (
+                  <h3 className="text-center text-red-400 mb-4">
+                    Informe algum valor nos campos abaixo.
+                  </h3>
+                ) : null}
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
                     <Label htmlFor="glicemia">Glicemia (mg/dL)</Label>
@@ -160,7 +175,7 @@ export const Form = ({ onSave }) => {
                       tabIndex={6}
                       variant="ghost"
                       disabled={saving}
-                      className="text-2xl size-12 mr-5 w-1/2"
+                      className="text-2xl size-12 w-1/2"
                       onClick={handleClose}
                     >
                       Cancelar
@@ -171,7 +186,7 @@ export const Form = ({ onSave }) => {
                       tabIndex={5}
                       id="save"
                       variant="default"
-                      className="text-2xl size-12 w-1/2"
+                      className="text-2xl size-12 ml-5 w-1/2"
                       loadingText="Salvando"
                       loading={saving}
                       onClick={handleSubmit}
