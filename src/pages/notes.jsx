@@ -1,4 +1,4 @@
-import { Form } from '@/components/form'
+import { Actions } from '@/components/actions'
 import { Header } from '@/components/header'
 import {
   Accordion,
@@ -108,7 +108,7 @@ export const NotesPage = () => {
           )}
         </CardContent>
       </Card>
-      <Form onSave={handleUpdate} />
+      <Actions onSave={handleUpdate} />
     </div>
   )
 }
