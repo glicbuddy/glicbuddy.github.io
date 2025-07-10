@@ -27,7 +27,7 @@ const buttonVariants = cva(
       }
     },
     defaultVariants: {
-      variant: 'outline',
+      variant: 'default',
       size: 'default'
     }
   }
@@ -45,7 +45,7 @@ function Base({ className, variant, size, asChild = false, ...props }) {
   )
 }
 
-function Loading({ loadingText = 'Aguarde...', ...props }) {
+function Loading({ loadingText = 'Salvando...', ...props }) {
   return (
     <Button {...props}>
       <Loader2Icon className="animate-spin size-4 mt-1" />

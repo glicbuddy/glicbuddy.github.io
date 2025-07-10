@@ -4,15 +4,15 @@ import logo from '/logo.svg'
 
 export const Header = () => (
   <CardHeader className="text-center justify-center w-full">
-    <CardTitle className="text-xl font-bold">
+    <CardTitle className="text-lg font-bold">
       <img
         src={logo}
-        className="h-20 mb-2 mx-auto"
+        className="h-16 mb-2 mx-auto"
         alt={`${config.appName} | ${config.appDescription}`}
         title={`${config.appName} | ${config.appDescription}`}
       />
       {config.appName}
     </CardTitle>
-    <CardDescription className="text-lg">{config.appDescription}</CardDescription>
+    <CardDescription>{config.appDescription}</CardDescription>
   </CardHeader>
 )
