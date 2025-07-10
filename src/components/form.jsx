@@ -120,7 +120,7 @@ export const Form = ({ onSave }) => {
                 <DrawerTitle className="text-center mb-4">Novo registro</DrawerTitle>
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-2">
-                    <Label htmlFor="glic">glic (mg/dL)</Label>
+                    <Label htmlFor="glic">Glicemia (mg/dL)</Label>
                     <Input
                       autoFocus
                       tabIndex={1}
