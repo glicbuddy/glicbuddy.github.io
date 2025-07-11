@@ -8,7 +8,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useNotes } from '@/hooks'
 import { toUnsignedInt } from '@/lib/number'
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
 import { monotonicFactory } from 'ulid'
 
 const ulid = monotonicFactory()
@@ -17,7 +16,6 @@ export const Form = () => {
   const [notes, setNotes] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
-  const navigate = useNavigate()
 
   const clearForm = () => {
     document.getElementById('glic').value = ''
@@ -32,12 +30,12 @@ export const Form = () => {
     clearForm()
     setBlank(false)
     setSaving(false)
-    navigate('/')
   }
 
   const handleSave = (newNotes = []) => {
     setNotes(newNotes.concat(notes).sort((a, b) => a.date - b.date))
     handleClose()
+    window.location = '/'
   }
 
   const handleSubmit = () => {

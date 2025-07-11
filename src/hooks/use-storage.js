@@ -6,7 +6,7 @@ export const useStorage = (key, defaultValue) => {
     return getItem(key) || defaultValue
   })
 
-  useEffect(() => setItem(key, value), [key, value])
+  useEffect(() => setItem(key, value), [key, JSON.stringify(value)])
 
   return [value, setValue]
 }

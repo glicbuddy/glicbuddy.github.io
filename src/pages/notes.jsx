@@ -16,17 +16,12 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { useNotes } from '@/hooks'
-import { useMemo } from 'react'
 
 export const Notes = () => {
   const [notes, setNotes] = useNotes()
 
   const isEmpty = !Boolean(notes?.length)
-
-  const groupedNotes = useMemo(
-    () => Object.groupBy(notes, ({ date }) => new Date(date).toLocaleDateString()),
-    [JSON.stringify(notes)]
-  )
+  const groupedNotes = Object.groupBy(notes, ({ date }) => new Date(date).toLocaleDateString())
 
   const prepareNote = (item) => {
     const insuType = item.insuFast ? 'rápida' : 'basal'

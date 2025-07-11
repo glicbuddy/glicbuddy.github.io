@@ -16,7 +16,7 @@ export const Stats = () => {
   return (
     <ScrollArea className="h-[550px]">
       <div className="w-full flex items-top pt-4 mb-10 justify-center">
-        <Card className="w-full max-w-sm justify-start mx-auto">
+        <Card className="w-full px-0 max-w-sm justify-start">
           <CardContent>
             <DrawerTitle className="text-center mx-auto mb-4">Estatísticas</DrawerTitle>
             <GlicDaily notes={notes} limit={2} />
