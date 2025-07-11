@@ -1,17 +1,23 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { DrawerTitle } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useNotes } from '@/hooks'
 import { toUnsignedInt } from '@/lib/number'
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { monotonicFactory } from 'ulid'
 
-export const Form = ({ title, onSave, onClose }) => {
+const ulid = monotonicFactory()
+
+export const Form = () => {
+  const [notes, setNotes] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
-  const ulid = monotonicFactory()
+  const navigate = useNavigate()
 
   const clearForm = () => {
     document.getElementById('glic').value = ''
@@ -26,7 +32,12 @@ export const Form = ({ title, onSave, onClose }) => {
     clearForm()
     setBlank(false)
     setSaving(false)
-    onClose()
+    navigate('/')
+  }
+
+  const handleSave = (newNotes = []) => {
+    setNotes(newNotes.concat(notes).sort((a, b) => a.date - b.date))
+    handleClose()
   }
 
   const handleSubmit = () => {
@@ -71,7 +82,7 @@ export const Form = ({ title, onSave, onClose }) => {
           date
         }
 
-        onSave([newNoteFast, newNoteBasal])
+        handleSave([newNoteFast, newNoteBasal])
       } else {
         const newNote = {
           id: ulid(),
@@ -82,9 +93,8 @@ export const Form = ({ title, onSave, onClose }) => {
           date
         }
 
-        onSave([newNote])
+        handleSave([newNote])
       }
-      handleClose()
     }, 500)
   }
 
@@ -93,7 +103,7 @@ export const Form = ({ title, onSave, onClose }) => {
       <div className="w-full flex items-top pt-4 mb-10 justify-center">
         <Card className="w-full max-w-sm justify-start mx-auto">
           <CardContent>
-            {title}
+            <DrawerTitle className="text-center mb-4">Novo registro</DrawerTitle>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="glic">Glicemia (mg/dL)</Label>

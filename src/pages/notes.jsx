@@ -15,11 +15,11 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { useStorage } from '@/hooks'
+import { useNotes } from '@/hooks'
 import { useMemo } from 'react'
 
-export const NotesPage = () => {
-  const [notes, setNotes] = useStorage('diabete.notes', [])
+export const Notes = () => {
+  const [notes, setNotes] = useNotes()
 
   const isEmpty = !Boolean(notes?.length)
 
@@ -53,10 +53,6 @@ export const NotesPage = () => {
     if (confirm('Deseja excluir esse registro?')) {
       setNotes(notes.filter((item) => item.id !== id))
     }
-  }
-
-  const handleUpdate = (newNotes = []) => {
-    setNotes(newNotes.concat(notes).sort((a, b) => a.date - b.date))
   }
 
   return (
@@ -108,7 +104,7 @@ export const NotesPage = () => {
           )}
         </CardContent>
       </Card>
-      <Actions onSave={handleUpdate} />
+      <Actions />
     </div>
   )
 }

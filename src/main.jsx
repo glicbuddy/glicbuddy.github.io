@@ -1,6 +1,6 @@
 /* global document */
 import '@/main.css'
-import { NotesPage } from '@/pages'
+import { Form, Notes, Stats } from '@/pages'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router'
 
@@ -9,7 +9,10 @@ const app = createRoot(document.getElementById('root'))
 app.render(
   <BrowserRouter>
     <Routes>
-      <Route index path="/" element={<NotesPage />} />
+      <Route path="/" element={<Notes />}>
+        <Route path="/registrar" element={<Form />} />
+        <Route path="/estatisticas" element={<Stats />} />
+      </Route>
     </Routes>
   </BrowserRouter>
 )
