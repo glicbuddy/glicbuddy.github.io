@@ -11,11 +11,14 @@ const chartConfig = {
 function process(data, limit) {
   const glicMonthlyData = Object.groupBy(
     data
-      .map(({ date, glic }) => ({
-        glic,
-        date: `${new Date(date).getMonth() + 1}/${new Date(date).getFullYear()}`,
-        timestamp: +new Date(date)
-      }))
+      .map(({ date, glic }) => {
+        const glicDate = new Date(date)
+        return {
+          glic,
+          date: `${glicDate.getMonth() + 1}/${glicDate.getFullYear()}`,
+          timestamp: +glicDate
+        }
+      })
       .sort((a, b) => a.timestamp - b.timestamp)
       .reverse(),
     ({ date }) => date
@@ -24,11 +27,10 @@ function process(data, limit) {
   return Object.keys(glicMonthlyData)
     .slice(0, limit)
     .map((date) => {
-      const sum = glicMonthlyData[date].map(({ glic }) => glic).reduce((acc, sum) => acc + sum, 0)
-      return {
-        date,
-        avg: sum / glicMonthlyData[date]?.length
-      }
+      const glicsMonthly = glicMonthlyData[date]
+      const glics = glicsMonthly.map(({ glic }) => glic).filter((glic) => Boolean(glic))
+      const avg = glics.reduce((acc, sum) => acc + sum, 0) / glics.length
+      return { date, avg }
     })
 }
 

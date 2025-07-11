@@ -21,25 +21,29 @@ const chartConfig = {
 function process(data, limit) {
   const insuDailyData = Object.groupBy(
     data
-      .map(({ date, insuFast, insuBasal }) => ({
-        insuFast,
-        insuBasal,
-        date: new Date(date).toLocaleDateString(),
-        timestamp: +new Date(date)
-      }))
+      .map(({ date, insuFast, insuBasal }) => {
+        const insuDate = new Date(date)
+        return {
+          insuFast,
+          insuBasal,
+          date: insuDate.toLocaleDateString(),
+          timestamp: +insuDate
+        }
+      })
       .sort((a, b) => a.timestamp - b.timestamp),
     ({ date }) => date
   )
 
   return Object.keys(insuDailyData)
     .slice(0, limit)
-    .map((date) => ({
-      date,
-      basal: insuDailyData[date]
-        .map(({ insuBasal }) => insuBasal)
-        .reduce((acc, sum) => acc + sum, 0),
-      fast: insuDailyData[date].map(({ insuFast }) => insuFast).reduce((acc, sum) => acc + sum, 0)
-    }))
+    .map((date) => {
+      const insuDaily = insuDailyData[date]
+      return {
+        date,
+        basal: insuDaily.map(({ insuBasal }) => insuBasal).reduce((acc, sum) => acc + sum, 0),
+        fast: insuDaily.map(({ insuFast }) => insuFast).reduce((acc, sum) => acc + sum, 0)
+      }
+    })
 }
 
 export const InsuSumDaily = ({ notes, limit }) => {

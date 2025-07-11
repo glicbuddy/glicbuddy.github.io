@@ -17,11 +17,15 @@ function process(data, limit) {
 
   return data
     .filter(({ date }) => limitDates.includes(new Date(date).toLocaleDateString()))
-    .map(({ date, glic }) => ({
-      glic,
-      time: `${new Date(date).getHours()}:${new Date(date).getMinutes()}`,
-      timestamp: +new Date(date)
-    }))
+    .filter(({ glic }) => Boolean(glic))
+    .map(({ date, glic }) => {
+      const glicDate = new Date(date)
+      return {
+        glic,
+        time: `${glicDate.getHours()}:${glicDate.getMinutes()}`,
+        timestamp: +glicDate
+      }
+    })
     .sort((a, b) => a.timestamp - b.timestamp)
 }
 

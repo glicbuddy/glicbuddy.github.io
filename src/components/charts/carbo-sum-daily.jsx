@@ -11,21 +11,27 @@ const chartConfig = {
 function process(data, limit) {
   const carboDailyData = Object.groupBy(
     data
-      .map(({ date, carbo }) => ({
-        carbo,
-        date: new Date(date).toLocaleDateString(),
-        timestamp: +new Date(date)
-      }))
+      .map(({ date, carbo }) => {
+        const carboDate = new Date(date)
+        return {
+          carbo,
+          date: carboDate.toLocaleDateString(),
+          timestamp: +carboDate
+        }
+      })
       .sort((a, b) => a.timestamp - b.timestamp),
     ({ date }) => date
   )
 
   return Object.keys(carboDailyData)
     .slice(0, limit)
-    .map((date) => ({
-      date,
-      total: carboDailyData[date].map(({ carbo }) => carbo).reduce((acc, sum) => acc + sum, 0)
-    }))
+    .map((date) => {
+      const carbosDaily = carboDailyData[date]
+      return {
+        date,
+        total: carbosDaily.map(({ carbo }) => carbo).reduce((acc, sum) => acc + sum, 0)
+      }
+    })
 }
 
 export const CarboSumDaily = ({ notes, limit }) => {

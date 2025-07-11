@@ -15,22 +15,25 @@ const chartConfig = {
 function process(data, limit) {
   const glicDailyData = Object.groupBy(
     data
-      .map(({ date, glic }) => ({
-        glic,
-        date: new Date(date).toLocaleDateString(),
-        timestamp: +new Date(date)
-      }))
+      .map(({ date, glic }) => {
+        const glicDate = new Date(date)
+        return {
+          glic,
+          date: glicDate.toLocaleDateString(),
+          timestamp: +glicDate
+        }
+      })
       .sort((a, b) => a.timestamp - b.timestamp),
     ({ date }) => date
   )
 
   return Object.keys(glicDailyData)
     .slice(0, limit)
-    .map((date) => ({
-      date,
-      min: Math.min(...glicDailyData[date].map(({ glic }) => glic)),
-      max: Math.max(...glicDailyData[date].map(({ glic }) => glic))
-    }))
+    .map((date) => {
+      const glicsDaily = glicDailyData[date]
+      const glics = glicsDaily.map(({ glic }) => glic).filter((glic) => Boolean(glic))
+      return { date, min: Math.min(...glics), max: Math.max(...glics) }
+    })
 }
 
 export const GlicMinMaxDaily = ({ notes, limit }) => {
