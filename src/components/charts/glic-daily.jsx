@@ -12,7 +12,6 @@ function process(data, limit) {
   const limitDates = Object.keys(
     Object.groupBy(data, ({ date }) => new Date(date).toLocaleDateString())
   )
-    .reverse()
     .slice(0, limit)
 
   return data
