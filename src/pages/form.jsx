@@ -13,7 +13,7 @@ import { monotonicFactory } from 'ulid'
 const ulid = monotonicFactory()
 
 export const Form = () => {
-  const [notes, setNotes] = useNotes()
+  const [notes, { saveNotes }] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -30,12 +30,12 @@ export const Form = () => {
     clearForm()
     setBlank(false)
     setSaving(false)
+    window.location = '/'
   }
 
   const handleSave = (newNotes = []) => {
-    setNotes(newNotes.concat(notes).sort((a, b) => a.date - b.date))
+    saveNotes(newNotes.concat(notes))
     handleClose()
-    window.location = '/'
   }
 
   const handleSubmit = () => {

@@ -18,35 +18,14 @@ import {
 import { useNotes } from '@/hooks'
 
 export const Notes = () => {
-  const [notes, setNotes] = useNotes()
+  const [notes, { prepareNote, listNoteDates, listNotesByDate, removeNote }] = useNotes()
 
   const isEmpty = !Boolean(notes?.length)
-  const groupedNotes = Object.groupBy(notes, ({ date }) => new Date(date).toLocaleDateString())
-
-  const prepareNote = (item) => {
-    const insuType = item.insuFast ? 'rápida' : 'basal'
-    const insuColor = item.insuFast ? 'text-red-300' : 'text-blue-300'
-    const insuFastOrBasal = item.insuFast || item.insuBasal
-    const glicValue = item.glic ? `${item.glic} mg/dL` : '--'
-    const carboValue = item.carbo ? `${item.carbo} g` : '--'
-    const timeValue = new Date(item.date).toLocaleTimeString()
-    const dateValue = new Date(item.date).toLocaleDateString()
-    const insuValue = insuFastOrBasal ? `${insuFastOrBasal}ui ${insuType}` : '--'
-    return {
-      id: item.id,
-      insuColor,
-      insuType,
-      insuValue,
-      timeValue,
-      dateValue,
-      carboValue,
-      glicValue
-    }
-  }
+  const noteDates = listNoteDates()
 
   const handleDelete = (id) => {
     if (confirm('Deseja excluir esse registro?')) {
-      setNotes(notes.filter((item) => item.id !== id))
+      removeNote(id)
     }
   }
 
@@ -59,7 +38,7 @@ export const Notes = () => {
             <h2 className="text-center my-10">Nenhum registro de glicemia</h2>
           ) : (
             <Accordion type="single" collapsible>
-              {Object.keys(groupedNotes)?.map((noteDate) => (
+              {noteDates.map((noteDate) => (
                 <AccordionItem value={noteDate} key={noteDate}>
                   <AccordionTrigger className="px-4">Data: {noteDate}</AccordionTrigger>
                   <AccordionContent className="px-0">
@@ -73,7 +52,7 @@ export const Notes = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {groupedNotes?.[noteDate]?.map((item) => {
+                        {listNotesByDate(noteDate).map((item) => {
                           const note = prepareNote(item)
                           return (
                             <TableRow

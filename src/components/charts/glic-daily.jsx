@@ -22,7 +22,7 @@ function process(data, limit) {
       const glicDate = new Date(date)
       return {
         glic,
-        time: `${glicDate.getHours()}:${glicDate.getMinutes()}`,
+        time: glicDate.toLocaleTimeString().slice(0, 5),
         timestamp: +glicDate
       }
     })
