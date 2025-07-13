@@ -11,8 +11,7 @@ const chartConfig = {
 function process(data, limit) {
   const limitDates = Object.keys(
     Object.groupBy(data, ({ date }) => new Date(date).toLocaleDateString())
-  )
-    .slice(0, limit)
+  ).slice(0, limit)
 
   return data
     .filter(({ date }) => limitDates.includes(new Date(date).toLocaleDateString()))
@@ -34,17 +33,10 @@ export const GlicDaily = ({ notes, limit }) => {
   return (
     <>
       <h2 className="text-center my-5">Glicemia dos últimos {limit} dias</h2>
-      <ChartContainer config={chartConfig}>
-        <AreaChart
-          accessibilityLayer
-          data={chartData}
-          margin={{
-            left: 12,
-            right: 12
-          }}
-        >
+      <ChartContainer config={chartConfig} className="min-h-[250px] px-0 w-full">
+        <AreaChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
-          <XAxis dataKey="time" tickLine={false} axisLine={false} tickMargin={8} />
+          <XAxis dataKey="time" tickLine={false} axisLine={false} tickMargin={5} />
           <ChartTooltip
             cursor={false}
             content={<ChartTooltipContent indicator="dot" hideLabel />}

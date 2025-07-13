@@ -26,7 +26,7 @@ function process(data, limit) {
         return {
           insuFast,
           insuBasal,
-          date: insuDate.toLocaleDateString(),
+          date: insuDate.toLocaleDateString().slice(0, 5),
           timestamp: +insuDate
         }
       })
@@ -52,7 +52,7 @@ export const InsuSumDaily = ({ notes, limit }) => {
   return (
     <>
       <h2 className="text-center my-5">Insulina rápida/basal dos últimos {limit} dias</h2>
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ChartContainer config={chartConfig} className="min-h-[250px] px-0 w-full">
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />

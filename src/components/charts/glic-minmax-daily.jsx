@@ -1,4 +1,10 @@
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent
+} from '@/components/ui/chart'
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 const chartConfig = {
@@ -19,7 +25,7 @@ function process(data, limit) {
         const glicDate = new Date(date)
         return {
           glic,
-          date: glicDate.toLocaleDateString(),
+          date: glicDate.toLocaleDateString().slice(0, 5),
           timestamp: +glicDate
         }
       })
@@ -42,13 +48,14 @@ export const GlicMinMaxDaily = ({ notes, limit }) => {
   return (
     <>
       <h2 className="text-center my-5">Glicemia mín/máx dos últimos {limit} dias</h2>
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ChartContainer config={chartConfig} className="min-h-[250px] px-0 w-full">
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
-          <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />
-          <ChartTooltip content={<ChartTooltipContent />} />
-          <Bar dataKey="min" fill="var(--color-min)" radius={4} />
-          <Bar dataKey="max" fill="var(--color-max)" radius={4} />
+          <XAxis dataKey="date" tickLine={false} tickMargin={5} axisLine={false} />
+          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          <Bar dataKey="min" stackId="a" fill="var(--color-min)" radius={[0, 0, 4, 4]} />
+          <Bar dataKey="max" stackId="a" fill="var(--color-max)" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ChartContainer>
     </>

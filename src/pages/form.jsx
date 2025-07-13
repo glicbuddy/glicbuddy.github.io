@@ -8,12 +8,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useNotes } from '@/hooks'
 import { toUnsignedInt } from '@/lib/number'
 import { useState } from 'react'
-import { monotonicFactory } from 'ulid'
-
-const ulid = monotonicFactory()
 
 export const Form = () => {
-  const [notes, { saveNotes }] = useNotes()
+  const [, { saveNotes }] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -33,8 +30,8 @@ export const Form = () => {
     window.location = '/'
   }
 
-  const handleSave = (newNotes = []) => {
-    saveNotes(newNotes.concat(notes))
+  const handleSave = (newNotes) => {
+    saveNotes(newNotes)
     handleClose()
   }
 
@@ -59,39 +56,30 @@ export const Form = () => {
     }
 
     setTimeout(() => {
-      const date = new Date().toISOString()
-
       if (insuFast > 0 && insuBasal > 0) {
-        const newNoteFast = {
-          id: ulid(),
-          glic,
-          carbo,
-          insuFast,
-          insuBasal: 0,
-          date
-        }
-
-        const newNoteBasal = {
-          id: ulid(),
-          glic,
-          carbo,
-          insuFast: 0,
-          insuBasal,
-          date
-        }
-
-        handleSave([newNoteFast, newNoteBasal])
+        handleSave([
+          {
+            glic,
+            carbo,
+            insuFast,
+            insuBasal: 0
+          },
+          {
+            glic,
+            carbo,
+            insuFast: 0,
+            insuBasal
+          }
+        ])
       } else {
-        const newNote = {
-          id: ulid(),
-          glic,
-          carbo,
-          insuFast,
-          insuBasal,
-          date
-        }
-
-        handleSave([newNote])
+        handleSave([
+          {
+            glic,
+            carbo,
+            insuFast,
+            insuBasal
+          }
+        ])
       }
     }, 500)
   }

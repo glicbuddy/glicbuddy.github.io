@@ -1,5 +1,5 @@
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { Bar, BarChart, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
 
 const chartConfig = {
   avg: {
@@ -15,7 +15,7 @@ function process(data, limit) {
         const glicDate = new Date(date)
         return {
           glic,
-          date: `${glicDate.getMonth() + 1}/${glicDate.getFullYear()}`,
+          date: glicDate.toLocaleDateString().slice(3),
           timestamp: +glicDate
         }
       })
@@ -40,12 +40,12 @@ export const GlicAvgMonthly = ({ notes, limit }) => {
   return (
     <>
       <h2 className="text-center my-5">Glicemia média dos últimos {limit} meses</h2>
-      <ChartContainer config={chartConfig} className="w-full">
-        <BarChart accessibilityLayer data={chartData} layout="vertical">
-          <XAxis type="number" dataKey="avg" hide />
-          <YAxis dataKey="date" type="category" tickLine={false} tickMargin={5} axisLine={false} />
-          <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-          <Bar dataKey="avg" fill="var(--color-avg)" radius={5} />
+      <ChartContainer config={chartConfig} className="min-h-[250px] px-0 w-full">
+        <BarChart accessibilityLayer data={chartData}>
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Bar dataKey="avg" fill="var(--color-avg)" radius={4} />
         </BarChart>
       </ChartContainer>
     </>

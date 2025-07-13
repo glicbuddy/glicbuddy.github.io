@@ -21,9 +21,9 @@ export const Stats = () => {
             <DrawerTitle className="text-center mx-auto mb-4">Estatísticas</DrawerTitle>
             <GlicDaily notes={notes} limit={2} />
             <GlicMinMaxDaily notes={notes} limit={7} />
-            <GlicAvgMonthly notes={notes} limit={6} />
-            <CarboSumDaily notes={notes} limit={7} />
+            <GlicAvgMonthly notes={notes} limit={3} />
             <InsuSumDaily notes={notes} limit={7} />
+            <CarboSumDaily notes={notes} limit={7} />
           </CardContent>
         </Card>
       </div>

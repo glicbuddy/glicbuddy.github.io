@@ -1,18 +1,35 @@
 import { useStorage } from '@/hooks'
 import { useMemo } from 'react'
+import { monotonicFactory } from 'ulid'
+
+const ulid = monotonicFactory()
+
+const LIMIT_NOTES = 1000
 
 export const useNotes = () => {
   const [notes, setNotes] = useStorage('diabete.notes', [])
 
   const groupedNotes = useMemo(
-    () => Object.groupBy(notes, ({ date }) => new Date(date).toLocaleDateString()),
+    () =>
+      Object.groupBy(
+        notes.sort((a, b) => a.date - b.date),
+        ({ date }) => new Date(date).toLocaleDateString()
+      ),
     [notes]
   )
 
   const operations = {
     listNoteDates: () => Object.keys(groupedNotes) ?? [],
     listNotesByDate: (noteDate) => groupedNotes?.[noteDate] ?? [],
-    saveNotes: (newNotes = []) => setNotes(newNotes.sort((a, b) => a.date - b.date)),
+    saveNotes: (newNotes = []) => {
+      const allNotes = newNotes
+        .map((note) => ({ id: ulid(), date: new Date().toISOString(), ...note }))
+        .concat(notes)
+        .sort((a, b) => a.date - b.date)
+        .slice(0, LIMIT_NOTES)
+
+      setNotes(allNotes)
+    },
     removeNote: (noteId) => setNotes(notes.filter((note) => note.id !== noteId)),
     prepareNote: (note) => {
       const insuType = note.insuFast ? 'rápida' : 'basal'
