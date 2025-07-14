@@ -52,8 +52,8 @@ export const Form = () => {
     setTimeout(() => {
       if (insuFast > 0 && insuBasal > 0) {
         handleSave([
-          { glic, carbo, insuFast, insuBasal: 0 },
-          { glic: 0, carbo: 0, insuFast: 0, insuBasal }
+          { glic, carbo, insuFast, insuBasal: null },
+          { glic: null, carbo: null, insuFast: null, insuBasal }
         ])
       } else {
         handleSave([{ glic, carbo, insuFast, insuBasal }])
