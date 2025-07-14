@@ -1,4 +1,5 @@
 import { useStorage } from '@/hooks'
+import { toUnsignedInt } from '@/lib/number'
 import { useMemo } from 'react'
 import { monotonicFactory } from 'ulid'
 
@@ -21,9 +22,24 @@ export const useNotes = () => {
   const operations = {
     listNoteDates: () => Object.keys(groupedNotes) ?? [],
     listNotesByDate: (noteDate) => groupedNotes?.[noteDate] ?? [],
+    isValidNote: ({ glic, carbo, insuFast, insuBasal }) => {
+      return (
+        toUnsignedInt(glic) > 0 ||
+        toUnsignedInt(carbo) > 0 ||
+        toUnsignedInt(insuFast) > 0 ||
+        toUnsignedInt(insuBasal) > 0
+      )
+    },
     saveNotes: (newNotes = []) => {
       const allNotes = newNotes
-        .map((note) => ({ id: ulid(), date: new Date().toISOString(), ...note }))
+        .map((note) => ({
+          id: ulid(),
+          date: new Date().toISOString(),
+          glic: toUnsignedInt(note.glic),
+          carbo: toUnsignedInt(note.carbo),
+          insuFast: toUnsignedInt(note.insuFast),
+          insuBasal: toUnsignedInt(note.insuBasal)
+        }))
         .concat(notes)
         .sort((a, b) => a.date - b.date)
         .slice(0, LIMIT_NOTES)

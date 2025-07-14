@@ -6,11 +6,10 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useNotes } from '@/hooks'
-import { toUnsignedInt } from '@/lib/number'
 import { useState } from 'react'
 
 export const Form = () => {
-  const [, { saveNotes }] = useNotes()
+  const [, { saveNotes, isValidNote }] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -39,17 +38,12 @@ export const Form = () => {
     setSaving(true)
     setBlank(false)
 
-    const glicEl = document.getElementById('glic')
-    const carboEl = document.getElementById('carbo')
-    const insuFastEl = document.getElementById('insuFast')
-    const insuBasalEl = document.getElementById('insuBasal')
+    const glic = document.getElementById('glic')?.value
+    const carbo = document.getElementById('carbo')?.value
+    const insuFast = document.getElementById('insuFast')?.value
+    const insuBasal = document.getElementById('insuBasal')?.value
 
-    const glic = toUnsignedInt(glicEl.value)
-    const carbo = toUnsignedInt(carboEl.value)
-    const insuFast = toUnsignedInt(insuFastEl.value)
-    const insuBasal = toUnsignedInt(insuBasalEl.value)
-
-    if (glic === 0 && carbo === 0 && insuFast === 0 && insuBasal === 0) {
+    if (!isValidNote({ glic, carbo, insuFast, insuBasal })) {
       setSaving(false)
       setBlank(true)
       return false

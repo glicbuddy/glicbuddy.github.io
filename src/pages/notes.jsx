@@ -40,7 +40,7 @@ export const Notes = () => {
             <Accordion type="single" collapsible>
               {noteDates.map((noteDate) => (
                 <AccordionItem value={noteDate} key={noteDate}>
-                  <AccordionTrigger className="px-4">Data: {noteDate}</AccordionTrigger>
+                  <AccordionTrigger className="px-4">{noteDate}</AccordionTrigger>
                   <AccordionContent className="px-0">
                     <Table className="overflow-x-hidden">
                       <TableHeader>
