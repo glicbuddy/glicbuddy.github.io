@@ -21,20 +21,28 @@ export const useNotes = () => {
 
   const operations = {
     listNoteDates: () => Object.keys(groupedNotes) ?? [],
-    listNotesByDate: (noteDate) => groupedNotes?.[noteDate] ?? [],
-    isValidNote: ({ glic, carbo, insuFast, insuBasal }) => {
-      return (
-        toUnsignedInt(glic) > 0 ||
-        toUnsignedInt(carbo) > 0 ||
-        toUnsignedInt(insuFast) > 0 ||
-        toUnsignedInt(insuBasal) > 0
-      )
+    listNotesByDate: (noteDate) => {
+      const allNotes = groupedNotes?.[noteDate] ?? []
+      return allNotes.sort((a, b) => new Date(a.date) - new Date(b.date))
+    },
+    isValidNote: ({ glic, carbo, insuFast, insuBasal, date }) => {
+      try {
+        return (
+          (toUnsignedInt(glic) > 0 ||
+            toUnsignedInt(carbo) > 0 ||
+            toUnsignedInt(insuFast) > 0 ||
+            toUnsignedInt(insuBasal) > 0) &&
+          new Date(date).toISOString()
+        )
+      } catch {
+        return false
+      }
     },
     saveNotes: (newNotes = []) => {
       const allNotes = newNotes
         .map((note) => ({
           id: ulid(),
-          date: new Date().toISOString(),
+          date: new Date(note.date).toISOString(),
           glic: toUnsignedInt(note.glic),
           carbo: toUnsignedInt(note.carbo),
           insuFast: toUnsignedInt(note.insuFast),
@@ -53,7 +61,7 @@ export const useNotes = () => {
       const insuFastOrBasal = note.insuFast || note.insuBasal
       const glicValue = note.glic ? `${note.glic} mg/dL` : '--'
       const carboValue = note.carbo ? `${note.carbo} g` : '--'
-      const timeValue = new Date(note.date).toLocaleTimeString()
+      const timeValue = new Date(note.date).toLocaleTimeString().slice(0, 5)
       const dateValue = new Date(note.date).toLocaleDateString()
       const insuValue = insuFastOrBasal ? `${insuFastOrBasal}ui ${insuType}` : '--'
       return {

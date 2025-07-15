@@ -32,7 +32,7 @@ export const GlicDaily = ({ notes, limit }) => {
 
   return (
     <>
-      <h2 className="text-center my-5">Glicemia dos últimos {limit} dias</h2>
+      <h2 className="text-center my-5">Glicemia das últimas 24 horas</h2>
       <ChartContainer config={chartConfig} className="min-h-[250px] px-0 w-full">
         <AreaChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
