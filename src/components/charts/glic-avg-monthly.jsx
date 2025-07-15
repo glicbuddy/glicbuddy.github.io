@@ -29,7 +29,7 @@ function process(data, limit) {
     .map((date) => {
       const glicsMonthly = glicMonthlyData[date]
       const glics = glicsMonthly.map(({ glic }) => glic).filter((glic) => Boolean(glic))
-      const avg = glics.reduce((acc, sum) => acc + sum, 0) / glics.length
+      const avg = Math.round(glics.reduce((acc, sum) => acc + sum, 0) / glics.length)
       return { date, avg }
     })
 }
