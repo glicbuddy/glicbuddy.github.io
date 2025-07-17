@@ -1,4 +1,5 @@
 import { useStorage } from '@/hooks'
+import { toMidnightDateTimestamp } from '@/lib/date'
 import { toUnsignedInt } from '@/lib/number'
 import { useMemo } from 'react'
 import { monotonicFactory } from 'ulid'
@@ -10,12 +11,19 @@ const LIMIT_NOTES = 1000
 export const useNotes = () => {
   const [notes, setNotes] = useStorage('diabete.notes', [])
 
+  const sortedNotes = useMemo(() => notes.sort((a, b) => a.date - b.date), [notes])
+
+  const sortedNoteDates = useMemo(() => {
+    const noteDates = sortedNotes
+      .map(({ date }) => toMidnightDateTimestamp(date))
+      .sort()
+      .reverse()
+
+    return Array.from(new Set(noteDates), (date) => new Date(date).toLocaleDateString())
+  }, [sortedNotes])
+
   const groupedNotes = useMemo(
-    () =>
-      Object.groupBy(
-        notes.sort((a, b) => a.date - b.date),
-        ({ date }) => new Date(date).toLocaleDateString()
-      ),
+    () => Object.groupBy(sortedNotes, ({ date }) => new Date(date).toLocaleDateString()),
     [notes]
   )
 
@@ -36,7 +44,7 @@ export const useNotes = () => {
   const operations = {
     setNotes,
     isValidNote,
-    listNoteDates: () => Object.keys(groupedNotes) ?? [],
+    listNoteDates: () => sortedNoteDates ?? [],
     listNotesByDate: (noteDate) => {
       const allNotes = groupedNotes?.[noteDate] ?? []
       return allNotes.sort((a, b) => new Date(a.date) - new Date(b.date))

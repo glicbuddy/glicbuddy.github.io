@@ -1,3 +1,9 @@
+export function toMidnightDateTimestamp(value) {
+  const date = new Date(value)
+  date.setHours(0, 0, 0, 0)
+  return date.getTime()
+}
+
 export function currentISODateWithTimezone() {
   const date = new Date()
   const tzOffset = -date.getTimezoneOffset()
