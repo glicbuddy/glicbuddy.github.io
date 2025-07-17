@@ -1,13 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer'
-import { ChartNoAxesCombined, NotebookPen } from 'lucide-react'
+import config from '@/config'
+import { ChartNoAxesCombined, NotebookPen, Settings } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
-
-const ACTIONS = {
-  FORM: '/registrar',
-  STATS: '/estatisticas'
-}
 
 export const Actions = () => {
   const [open, setOpen] = useState(false)
@@ -15,7 +11,7 @@ export const Actions = () => {
   const location = useLocation()
 
   useEffect(() => {
-    setOpen(Object.values(ACTIONS).includes(location.pathname))
+    setOpen(config.appActions.includes(location.pathname))
   }, [location.pathname])
 
   const handleOpen = (path) => {
@@ -26,7 +22,7 @@ export const Actions = () => {
   const handleChange = (isOpen) => {
     if (!isOpen) {
       setOpen(false)
-      navigate('/')
+      navigate(config.appRoutes.home)
     }
   }
 
@@ -37,14 +33,21 @@ export const Actions = () => {
           <Button
             variant="secondary"
             className="size-12 mb-3"
-            onClick={() => handleOpen(ACTIONS.STATS)}
+            onClick={() => handleOpen(config.appRoutes.settings)}
+          >
+            <Settings className="size-5" />
+          </Button>
+          <Button
+            variant="secondary"
+            className="size-12 mb-3"
+            onClick={() => handleOpen(config.appRoutes.stats)}
           >
             <ChartNoAxesCombined className="size-5" />
           </Button>
           <Button
             variant="default"
             className="size-12 mb-3"
-            onClick={() => handleOpen(ACTIONS.FORM)}
+            onClick={() => handleOpen(config.appRoutes.form)}
           >
             <NotebookPen className="size-5" />
           </Button>

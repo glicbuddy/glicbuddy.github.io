@@ -19,24 +19,49 @@ export const useNotes = () => {
     [notes]
   )
 
+  const isValidNote = ({ glic, carbo, insuFast, insuBasal, date }) => {
+    try {
+      return (
+        (toUnsignedInt(glic) > 0 ||
+          toUnsignedInt(carbo) > 0 ||
+          toUnsignedInt(insuFast) > 0 ||
+          toUnsignedInt(insuBasal) > 0) &&
+        new Date(date).toISOString()
+      )
+    } catch {
+      return false
+    }
+  }
+
   const operations = {
+    setNotes,
+    isValidNote,
     listNoteDates: () => Object.keys(groupedNotes) ?? [],
     listNotesByDate: (noteDate) => {
       const allNotes = groupedNotes?.[noteDate] ?? []
       return allNotes.sort((a, b) => new Date(a.date) - new Date(b.date))
     },
-    isValidNote: ({ glic, carbo, insuFast, insuBasal, date }) => {
-      try {
-        return (
-          (toUnsignedInt(glic) > 0 ||
-            toUnsignedInt(carbo) > 0 ||
-            toUnsignedInt(insuFast) > 0 ||
-            toUnsignedInt(insuBasal) > 0) &&
-          new Date(date).toISOString()
-        )
-      } catch {
-        return false
+
+    restoreNotes: (content = []) => {
+      if (Array.isArray(content)) {
+        const allNotes = content
+          .map(({ id, date, glic, carbo, insuFast, insuBasal }) => ({
+            id: id || ulid(),
+            date,
+            glic,
+            carbo,
+            insuFast,
+            insuBasal
+          }))
+          .filter(isValidNote)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .reverse()
+          .slice(0, LIMIT_NOTES)
+
+        setNotes(allNotes)
+        return true
       }
+      return false
     },
     saveNotes: (newNotes = []) => {
       const allNotes = newNotes

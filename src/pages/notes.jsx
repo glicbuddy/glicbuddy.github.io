@@ -16,6 +16,7 @@ import {
   TableRow
 } from '@/components/ui/table'
 import { useNotes } from '@/hooks'
+import { CalendarHeart } from 'lucide-react'
 
 export const Notes = () => {
   const [notes, { prepareNote, listNoteDates, listNotesByDate, removeNote }] = useNotes()
@@ -30,7 +31,7 @@ export const Notes = () => {
   }
 
   return (
-    <div className="w-full flex items-center pb-20 justify-center min-h-screen">
+    <div className="w-full flex items-center pb-40 justify-center min-h-screen">
       <Card className="w-full max-w-sm justify-center mx-auto">
         <Header />
         <CardContent className="p-0">
@@ -40,7 +41,12 @@ export const Notes = () => {
             <Accordion type="single" collapsible>
               {noteDates.map((noteDate) => (
                 <AccordionItem value={noteDate} key={noteDate}>
-                  <AccordionTrigger className="px-4">{noteDate}</AccordionTrigger>
+                  <AccordionTrigger className="px-4">
+                    <div className="flex items-center gap-2">
+                      <CalendarHeart className="mr-2 size-5" />
+                      {noteDate}
+                    </div>
+                  </AccordionTrigger>
                   <AccordionContent className="px-0">
                     <Table className="overflow-x-hidden">
                       <TableHeader>
@@ -63,7 +69,10 @@ export const Notes = () => {
                               <TableCell className="pl-4 py-4">{note.glicValue}</TableCell>
                               <TableCell className="py-4">{note.carboValue}</TableCell>
                               <TableCell className="py-4">{note.insuValue}</TableCell>
-                              <TableCell className="text-right pr-5 py-4">
+                              <TableCell
+                                className="text-right pr-5 py-4"
+                                title={`${note.dateValue} ${note.timeValue}`}
+                              >
                                 {note.timeValue}
                               </TableCell>
                             </TableRow>
