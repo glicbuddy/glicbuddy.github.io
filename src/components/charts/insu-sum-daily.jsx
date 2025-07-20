@@ -35,7 +35,7 @@ function process(data, limit) {
   )
 
   return Object.keys(insuDailyData)
-    .slice(0, limit)
+    .slice(-limit)
     .map((date) => {
       const insuDaily = insuDailyData[date]
       return {
@@ -56,7 +56,7 @@ export const InsuSumDaily = ({ notes, limit }) => {
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="date" tickLine={false} tickMargin={10} axisLine={false} />
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+          <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
           <Bar dataKey="basal" stackId="a" fill="var(--color-fast)" radius={[0, 0, 4, 4]} />
           <Bar dataKey="fast" stackId="a" fill="var(--color-basal)" radius={[4, 4, 0, 0]} />

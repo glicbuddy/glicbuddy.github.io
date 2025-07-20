@@ -24,7 +24,7 @@ function process(data, limit) {
   )
 
   return Object.keys(carboDailyData)
-    .slice(0, limit)
+    .slice(-limit)
     .map((date) => {
       const carbosDaily = carboDailyData[date]
       return {

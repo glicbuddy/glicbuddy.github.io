@@ -34,7 +34,7 @@ function process(data, limit) {
   )
 
   return Object.keys(glicDailyData)
-    .slice(0, limit)
+    .slice(-limit)
     .map((date) => {
       const glicsDaily = glicDailyData[date]
       const glics = glicsDaily.map(({ glic }) => glic).filter((glic) => Boolean(glic))
@@ -52,7 +52,7 @@ export const GlicMinMaxDaily = ({ notes, limit }) => {
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="date" tickLine={false} tickMargin={5} axisLine={false} />
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+          <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
           <Bar dataKey="min" stackId="a" fill="var(--color-min)" radius={[0, 0, 4, 4]} />
           <Bar dataKey="max" stackId="a" fill="var(--color-max)" radius={[4, 4, 0, 0]} />

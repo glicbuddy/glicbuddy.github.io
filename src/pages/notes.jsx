@@ -63,7 +63,7 @@ export const Notes = () => {
                           return (
                             <TableRow
                               key={note.id}
-                              className={note.insuColor}
+                              className={note.color}
                               onClick={() => handleDelete(note.id)}
                             >
                               <TableCell className="pl-4 py-4">{note.glicValue}</TableCell>

@@ -89,9 +89,10 @@ export const useNotes = () => {
     },
     removeNote: (noteId) => setNotes(notes.filter((note) => note.id !== noteId)),
     prepareNote: (note) => {
+      const isGlicNormal = note.glic == 0 || (note.glic > 70 && note.glic < 180)
+      const color = isGlicNormal ? 'text-gray-400' : 'text-red-300'
       const insuFastOrBasal = note.insuFast || note.insuBasal
       const insuType = note.insuFast ? 'rápida' : 'basal'
-      const insuColor = insuFastOrBasal ? (note.insuFast ? 'text-red-300' : 'text-blue-300') : ''
       const glicValue = note.glic ? `${note.glic} mg/dL` : '--'
       const carboValue = note.carbo ? `${note.carbo} g` : '--'
       const timeValue = new Date(note.date).toLocaleTimeString().slice(0, 5)
@@ -99,7 +100,8 @@ export const useNotes = () => {
       const insuValue = insuFastOrBasal ? `${insuFastOrBasal}ui ${insuType}` : '--'
       return {
         id: note.id,
-        insuColor,
+        color,
+        insuType,
         insuValue,
         timeValue,
         dateValue,

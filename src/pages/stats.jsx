@@ -19,11 +19,11 @@ export const Stats = () => {
         <Card className="w-full pr-2 mx-0 max-w-sm justify-start">
           <CardContent className="px-2">
             <DrawerTitle className="text-center mx-auto mb-4">Estatísticas</DrawerTitle>
-            <GlicDaily notes={notes} limit={1} />
+            <GlicDaily notes={notes} limit={7} />
             <GlicMinMaxDaily notes={notes} limit={7} />
             <GlicAvgMonthly notes={notes} limit={3} />
-            <InsuSumDaily notes={notes} limit={7} />
             <CarboSumDaily notes={notes} limit={7} />
+            <InsuSumDaily notes={notes} limit={7} />
           </CardContent>
         </Card>
       </div>

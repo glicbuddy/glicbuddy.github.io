@@ -25,7 +25,7 @@ function process(data, limit) {
   )
 
   return Object.keys(glicMonthlyData)
-    .slice(0, limit)
+    .slice(-limit)
     .map((date) => {
       const glicsMonthly = glicMonthlyData[date]
       const glics = glicsMonthly.map(({ glic }) => glic).filter((glic) => Boolean(glic))
