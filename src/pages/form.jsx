@@ -105,7 +105,7 @@ export const Form = () => {
                 disabled={saving}
                 onFocus={clearWarnings}
                 id="insuFast"
-                type="tel"
+                type="number"
                 className="text-xl font-bold size-10 w-full"
               />
             </div>
