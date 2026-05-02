@@ -1,12 +1,13 @@
 import { useStorage } from '@/hooks'
 import { toMidnightDateTimestamp } from '@/lib/date'
-import { toUnsignedInt } from '@/lib/number'
+import { toUnsigned } from '@/lib/number'
+import { getPreInsuPeriodLabel, isValidPreInsuPeriod } from '@/lib/utils'
 import { useMemo } from 'react'
 import { monotonicFactory } from 'ulid'
 
 const ulid = monotonicFactory()
 
-const LIMIT_NOTES = 1000
+const LIMIT_NOTES = 2000
 
 export const useNotes = () => {
   const [notes, setNotes] = useStorage('diabete.notes', [])
@@ -30,10 +31,10 @@ export const useNotes = () => {
   const isValidNote = ({ glic, carbo, insuFast, insuBasal, date }) => {
     try {
       return (
-        (toUnsignedInt(glic) > 0 ||
-          toUnsignedInt(carbo) > 0 ||
-          toUnsignedInt(insuFast) > 0 ||
-          toUnsignedInt(insuBasal) > 0) &&
+        (toUnsigned(glic) > 0 ||
+          toUnsigned(carbo) > 0 ||
+          toUnsigned(insuFast) > 0 ||
+          toUnsigned(insuBasal) > 0) &&
         new Date(date).toISOString()
       )
     } catch {
@@ -49,17 +50,42 @@ export const useNotes = () => {
       const allNotes = groupedNotes?.[noteDate] ?? []
       return allNotes.sort((a, b) => new Date(a.date) - new Date(b.date))
     },
+    listValidPreInsuNotes: () =>
+      sortedNotes.filter(
+        ({ glic, preInsuPeriod }) => isValidPreInsuPeriod(preInsuPeriod) && toUnsigned(glic) > 0
+      ),
+    preparePreInsuNoteByDate: (noteDate) => {
+      const allNotes = groupedNotes?.[noteDate] ?? []
+      return allNotes
+        .filter(
+          ({ glic, preInsuPeriod }) => isValidPreInsuPeriod(preInsuPeriod) && toUnsigned(glic) > 0
+        )
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .reduce(
+          (acc, note) => {
+            const isGlicNormal = note.glic == 0 || (note.glic > 70 && note.glic < 180)
+            const color = isGlicNormal ? 'text-gray-400' : 'text-red-300'
+            const preInsuPeriodGlic = {
+              [`${note.preInsuPeriod}Glic`]: note.glic,
+              [`${note.preInsuPeriod}Color`]: color
+            }
+            return { ...acc, ...preInsuPeriodGlic }
+          },
+          { date: noteDate }
+        )
+    },
 
     restoreNotes: (content = []) => {
       if (Array.isArray(content)) {
         const allNotes = content
-          .map(({ id, date, glic, carbo, insuFast, insuBasal }) => ({
+          .map(({ id, date, glic, carbo, insuFast, insuBasal, preInsuPeriod }) => ({
             id: id || ulid(),
             date,
             glic,
             carbo,
             insuFast,
-            insuBasal
+            insuBasal,
+            preInsuPeriod
           }))
           .filter(isValidNote)
           .sort((a, b) => new Date(a.date) - new Date(b.date))
@@ -76,10 +102,11 @@ export const useNotes = () => {
         .map((note) => ({
           id: ulid(),
           date: new Date(note.date).toISOString(),
-          glic: toUnsignedInt(note.glic),
-          carbo: toUnsignedInt(note.carbo),
-          insuFast: toUnsignedInt(note.insuFast),
-          insuBasal: toUnsignedInt(note.insuBasal)
+          glic: toUnsigned(note.glic),
+          carbo: toUnsigned(note.carbo),
+          insuFast: toUnsigned(note.insuFast),
+          insuBasal: toUnsigned(note.insuBasal),
+          preInsuPeriod: note.preInsuPeriod
         }))
         .concat(notes)
         .sort((a, b) => a.date - b.date)
@@ -97,7 +124,11 @@ export const useNotes = () => {
       const carboValue = note.carbo ? `${note.carbo} g` : '--'
       const timeValue = new Date(note.date).toLocaleTimeString().slice(0, 5)
       const dateValue = new Date(note.date).toLocaleDateString()
-      const insuValue = insuFastOrBasal ? `${insuFastOrBasal}ui ${insuType}` : '--'
+      const insuFixedValue = Number.isSafeInteger(insuFastOrBasal) ? 0 : 1
+      const insuValue = insuFastOrBasal
+        ? `${insuFastOrBasal.toFixed(insuFixedValue)}ui ${insuType}`
+        : '--'
+      const preInsuPeriodLabel = getPreInsuPeriodLabel(note?.preInsuPeriod)
       return {
         id: note.id,
         color,
@@ -106,7 +137,8 @@ export const useNotes = () => {
         timeValue,
         dateValue,
         carboValue,
-        glicValue
+        glicValue,
+        preInsuPeriodLabel
       }
     }
   }

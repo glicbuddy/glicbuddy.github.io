@@ -14,7 +14,7 @@ export const Stats = () => {
   const [notes] = useNotes()
 
   return (
-    <ScrollArea className="h-[550px]">
+    <ScrollArea className="h-140">
       <div className="w-full flex items-top pt-4 px-0 mb-10 justify-center">
         <Card className="w-full pr-2 mx-0 max-w-sm justify-start">
           <CardContent className="px-2">

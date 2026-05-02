@@ -3,27 +3,43 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { DrawerTitle } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useNotes } from '@/hooks'
 import { currentISODateWithTimezone } from '@/lib/date'
 import { useState } from 'react'
+import { PRE_INSU_PERIODS } from '@/lib/utils'
 
 export const Form = () => {
   const [, { saveNotes, isValidNote }] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [preInsuPeriod, setPreInsuPeriod] = useState(null)
 
   const clearForm = () => {
     document.getElementById('glic').value = ''
     document.getElementById('carbo').value = ''
     document.getElementById('insuFast').value = ''
     document.getElementById('insuBasal').value = ''
+    setPreInsuPeriod(null)
   }
 
   const clearWarnings = () => setBlank(false)
 
+  const handlePreInsuPeriodChange = (value) => {
+    setPreInsuPeriod(value)
+  }
+
   const handleClose = () => {
     clearForm()
+    setPreInsuPeriod(null)
     setBlank(false)
     setSaving(false)
     window.location = '/'
@@ -31,6 +47,7 @@ export const Form = () => {
 
   const handleSave = (newNotes) => {
     saveNotes(newNotes)
+    setPreInsuPeriod(null)
     handleClose()
   }
 
@@ -53,11 +70,11 @@ export const Form = () => {
     setTimeout(() => {
       if (insuFast > 0 && insuBasal > 0) {
         handleSave([
-          { glic, carbo, insuFast, insuBasal: null, date },
+          { glic, carbo, insuFast, insuBasal: null, date, preInsuPeriod },
           { glic: null, carbo: null, insuFast: null, insuBasal, date }
         ])
       } else {
-        handleSave([{ glic, carbo, insuFast, insuBasal, date }])
+        handleSave([{ glic, carbo, insuFast, insuBasal, preInsuPeriod, date }])
       }
     }, 500)
   }
@@ -117,7 +134,7 @@ export const Form = () => {
                 disabled={saving}
                 onFocus={clearWarnings}
                 id="insuBasal"
-                type="tel"
+                type="number"
                 className="text-xl font-bold size-10 w-full"
               />
             </div>
@@ -126,6 +143,7 @@ export const Form = () => {
             <div className="grid gap-2">
               <Label htmlFor="date">Data e hora</Label>
               <Input
+                tabIndex={5}
                 disabled={saving}
                 onFocus={clearWarnings}
                 id="date"
@@ -135,8 +153,33 @@ export const Form = () => {
               />
             </div>
           </div>
+          <div className="flex gap-6 mt-4">
+            <div className="grid gap-2">
+              <Label htmlFor="date">Período pré insulina</Label>
+              <Select
+                tabIndex={6}
+                id="preInsuPeriod"
+                disabled={saving}
+                onFocus={clearWarnings}
+                onValueChange={handlePreInsuPeriodChange}
+                className="text-md font-bold size-14 w-full"
+              >
+                <SelectTrigger className="text-md font-bold size-14 w-full">
+                  <SelectValue placeholder="Nenhum" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {Object.entries(PRE_INSU_PERIODS).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>{value}</SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <CardFooter className="mt-6 px-0">
             <Button
+              tabIndex={8}
               variant="ghost"
               disabled={saving}
               className="text-xl size-10 w-1/2"
@@ -148,7 +191,7 @@ export const Form = () => {
               <TooltipTrigger asChild>
                 <Button
                   id="save"
-                  tabIndex={5}
+                  tabIndex={7}
                   className="text-xl size-10 w-1/2"
                   loading={saving}
                   onClick={handleSubmit}
