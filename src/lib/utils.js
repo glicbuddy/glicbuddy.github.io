@@ -5,7 +5,7 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export const PRE_INSU_PERIODS = {
+export const PRE_GLIC_PERIODS = {
   preCafeManha: 'Pré café manhã',
   preAlmoco: 'Pré almoço',
   preCafeTarde: 'Pré café tarde',
@@ -13,10 +13,10 @@ export const PRE_INSU_PERIODS = {
   preDormir: 'Pré dormir'
 }
 
-export function getPreInsuPeriodLabel(preInsuPeriod) {
-  return PRE_INSU_PERIODS?.[preInsuPeriod] ?? 'Nenhum'
+export function getPreGlicPeriodLabel(preGlicPeriod) {
+  return PRE_GLIC_PERIODS?.[preGlicPeriod] ?? 'Nenhum'
 }
 
-export function isValidPreInsuPeriod(preInsuPeriod) {
-  return PRE_INSU_PERIODS?.[preInsuPeriod] ? true : false
+export function isValidPreGlicPeriod(preGlicPeriod = '') {
+  return PRE_GLIC_PERIODS?.[preGlicPeriod] ? true : false
 }

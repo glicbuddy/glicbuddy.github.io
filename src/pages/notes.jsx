@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { useNotes } from '@/hooks'
-import { PRE_INSU_PERIODS } from '@/lib/utils'
+import { PRE_GLIC_PERIODS } from '@/lib/utils'
 import { CalendarHeart } from 'lucide-react'
 import { useState } from 'react'
 
@@ -85,11 +85,9 @@ const ListInsuNotes = () => {
 }
 
 const ListGlicNotes = () => {
-  const [, { listNoteDates, listValidPreInsuNotes, preparePreInsuNoteByDate }] = useNotes()
-  const preInsuNotes = listValidPreInsuNotes()
-  const isEmpty = !Boolean(preInsuNotes?.length)
-  const noteDates = listNoteDates()
-
+  const [, { listGlicNoteDates, preparePreGlicNoteByDate }] = useNotes()
+  const noteDates = listGlicNoteDates()
+  const isEmpty = !Boolean(noteDates?.length)
   return isEmpty ? (
     <h2 className="text-center my-10">Nenhum registro de glicemia</h2>
   ) : (
@@ -97,33 +95,33 @@ const ListGlicNotes = () => {
       <TableHeader>
         <TableRow>
           <TableHead className="pl-4">Data</TableHead>
-          {Object.values(PRE_INSU_PERIODS).map((period) => (
+          {Object.values(PRE_GLIC_PERIODS).map((period) => (
             <TableHead key={period}>{period}</TableHead>
           ))}
         </TableRow>
       </TableHeader>
       <TableBody>
         {noteDates.map((noteDate) => {
-          const note = preparePreInsuNoteByDate(noteDate)
+          const note = preparePreGlicNoteByDate(noteDate)
           return (
             <TableRow key={note.date}>
               <TableCell className="pl-4">
                 {note.date}
               </TableCell>
               <TableCell className={note.preCafeManhaColor}>
-                {note.preCafeManhaGlic ? `${note.preCafeManhaGlic} mg/dL` : '--'}
+                {note.preCafeManhaGlic}
               </TableCell>
               <TableCell className={note.preAlmocoColor}>
-                {note.preAlmocoGlic ? `${note.preAlmocoGlic} mg/dL` : '--'}
+                {note.preAlmocoGlic}
               </TableCell>
               <TableCell className={note.preCafeTardeColor}>
-                {note.preCafeTardeGlic ? `${note.preCafeTardeGlic} mg/dL` : '--'}
+                {note.preCafeTardeGlic}
               </TableCell>
               <TableCell className={note.preJantarColor}>
-                {note.preJantarGlic ? `${note.preJantarGlic} mg/dL` : '--'}
+                {note.preJantarGlic}
               </TableCell>
               <TableCell className={note.preDormirColor}>
-                {note.preDormirGlic ? `${note.preDormirGlic} mg/dL` : '--'}
+                {note.preDormirGlic}
               </TableCell>
             </TableRow>
           )

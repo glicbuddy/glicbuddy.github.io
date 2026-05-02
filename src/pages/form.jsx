@@ -15,31 +15,32 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useNotes } from '@/hooks'
 import { currentISODateWithTimezone } from '@/lib/date'
 import { useState } from 'react'
-import { PRE_INSU_PERIODS } from '@/lib/utils'
+import { PRE_GLIC_PERIODS } from '@/lib/utils'
+
 
 export const Form = () => {
   const [, { saveNotes, isValidNote }] = useNotes()
   const [blank, setBlank] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [preInsuPeriod, setPreInsuPeriod] = useState(null)
+  const [preGlicPeriod, setPreGlicPeriod] = useState(null)
 
   const clearForm = () => {
     document.getElementById('glic').value = ''
     document.getElementById('carbo').value = ''
     document.getElementById('insuFast').value = ''
     document.getElementById('insuBasal').value = ''
-    setPreInsuPeriod(null)
+    setPreGlicPeriod(null)
   }
 
   const clearWarnings = () => setBlank(false)
 
-  const handlePreInsuPeriodChange = (value) => {
-    setPreInsuPeriod(value)
+  const handlePreGlicPeriodChange = (value) => {
+    setPreGlicPeriod(value)
   }
 
   const handleClose = () => {
     clearForm()
-    setPreInsuPeriod(null)
+    setPreGlicPeriod(null)
     setBlank(false)
     setSaving(false)
     window.location = '/'
@@ -47,7 +48,7 @@ export const Form = () => {
 
   const handleSave = (newNotes) => {
     saveNotes(newNotes)
-    setPreInsuPeriod(null)
+    setPreGlicPeriod(null)
     handleClose()
   }
 
@@ -70,11 +71,11 @@ export const Form = () => {
     setTimeout(() => {
       if (insuFast > 0 && insuBasal > 0) {
         handleSave([
-          { glic, carbo, insuFast, insuBasal: null, date, preInsuPeriod },
+          { glic, carbo, insuFast, insuBasal: null, date, preGlicPeriod },
           { glic: null, carbo: null, insuFast: null, insuBasal, date }
         ])
       } else {
-        handleSave([{ glic, carbo, insuFast, insuBasal, preInsuPeriod, date }])
+        handleSave([{ glic, carbo, insuFast, insuBasal, preGlicPeriod, date }])
       }
     }, 500)
   }
@@ -158,10 +159,10 @@ export const Form = () => {
               <Label htmlFor="date">Período pré insulina</Label>
               <Select
                 tabIndex={6}
-                id="preInsuPeriod"
+                id="preGlicPeriod"
                 disabled={saving}
                 onFocus={clearWarnings}
-                onValueChange={handlePreInsuPeriodChange}
+                onValueChange={handlePreGlicPeriodChange}
                 className="text-md font-bold size-14 w-full"
               >
                 <SelectTrigger className="text-md font-bold size-14 w-full">
@@ -169,7 +170,7 @@ export const Form = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {Object.entries(PRE_INSU_PERIODS).map(([key, value]) => (
+                    {Object.entries(PRE_GLIC_PERIODS).map(([key, value]) => (
                       <SelectItem key={key} value={key}>{value}</SelectItem>
                     ))}
                   </SelectGroup>
