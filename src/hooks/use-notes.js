@@ -25,7 +25,9 @@ export const useNotes = () => {
 
   const sortedGlicNoteDates = useMemo(() => {
     const noteDates = sortedNotes
-      .filter(({ glic, preGlicPeriod }) => isValidPreGlicPeriod(preGlicPeriod) && toUnsigned(glic) > 0)
+      .filter(
+        ({ glic, preGlicPeriod }) => isValidPreGlicPeriod(preGlicPeriod) && toUnsigned(glic) > 0
+      )
       .map(({ date }) => toMidnightDateTimestamp(date))
       .sort()
       .reverse()
@@ -52,6 +54,8 @@ export const useNotes = () => {
     }
   }
 
+  const isGlicNormal = (glic = 0) => glic == 0 || (glic > 70 && glic < 180)
+
   const operations = {
     setNotes,
     isValidNote,
@@ -71,11 +75,13 @@ export const useNotes = () => {
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .reduce(
           (acc, note) => {
-            const isGlicNormal = note.glic == 0 || (note.glic > 70 && note.glic < 180)
-            const color = isGlicNormal ? 'text-gray-400' : 'text-red-300'
+            const color = isGlicNormal(note.glic) ? 'text-gray-400' : 'text-red-300'
+            const colorHex = isGlicNormal(note.glic) ? '#000000' : '#EF4444'
+            const glic = note.glic > 0 ? `${note.glic} mg/dL` : ''
             const preGlicPeriodData = {
-              [`${note.preGlicPeriod}Glic`]: note.glic ? `${note.glic} mg/dL` : '--',
-              [`${note.preGlicPeriod}Color`]: color
+              [`${note.preGlicPeriod}Glic`]: glic,
+              [`${note.preGlicPeriod}Color`]: color,
+              [`${note.preGlicPeriod}ColorHex`]: colorHex
             }
             return { ...acc, ...preGlicPeriodData }
           },

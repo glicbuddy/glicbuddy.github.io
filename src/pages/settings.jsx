@@ -41,7 +41,7 @@ export const Settings = () => {
               return
             }
             alert('Backup restaurado com sucesso!')
-            window.location = config.appRoutes.home
+            window.location = config.appRoutes.home.path
           } catch (error) {
             console.error(error)
             alert('Este arquivo não é um backup válido.')
@@ -58,7 +58,7 @@ export const Settings = () => {
     if (confirm('Você tem certeza que deseja apagar todos os dados?')) {
       setNotes([])
       alert('Todos os dados foram apagados.')
-      window.location = config.appRoutes.home
+      window.location = config.appRoutes.home.path
     }
   }
 

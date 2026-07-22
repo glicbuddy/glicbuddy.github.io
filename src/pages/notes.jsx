@@ -6,6 +6,8 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
@@ -15,11 +17,9 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { useNotes } from '@/hooks'
-import { PRE_GLIC_PERIODS } from '@/lib/utils'
-import { CalendarHeart } from 'lucide-react'
+import { PRE_GLIC_PERIODS, downloadGlicNotesPDF } from '@/lib/utils'
+import { CalendarHeart, FileText } from 'lucide-react'
 import { useState } from 'react'
 
 const ListInsuNotes = () => {
@@ -88,46 +88,50 @@ const ListGlicNotes = () => {
   const [, { listGlicNoteDates, preparePreGlicNoteByDate }] = useNotes()
   const noteDates = listGlicNoteDates()
   const isEmpty = !Boolean(noteDates?.length)
-  return isEmpty ? (
-    <h2 className="text-center my-10">Nenhum registro de glicemia</h2>
-  ) : (
-    <Table className="overflow-x-hidden">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="pl-4">Data</TableHead>
-          {Object.values(PRE_GLIC_PERIODS).map((period) => (
-            <TableHead key={period}>{period}</TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {noteDates.map((noteDate) => {
-          const note = preparePreGlicNoteByDate(noteDate)
-          return (
+
+  if (isEmpty) {
+    return <h2 className="text-center my-10">Nenhum registro de glicemia</h2>
+  }
+
+  const notesByDates = noteDates.map(preparePreGlicNoteByDate)
+  return (
+    <div className="w-full text-center">
+      <Button
+        variant="secondary"
+        className="w-1/2 mb-2"
+        title="Gerar PDF"
+        onClick={() => downloadGlicNotesPDF(notesByDates)}
+      >
+        <FileText className="size-5" />
+        Gerar PDF
+      </Button>
+      <Table className="overflow-x-hidden">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Data</TableHead>
+            {Object.values(PRE_GLIC_PERIODS).map((period) => (
+              <TableHead key={period}>{period}</TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {notesByDates.map((note) => (
             <TableRow key={note.date}>
-              <TableCell className="pl-4">
-                {note.date}
-              </TableCell>
+              <TableCell className="pl-4">{note.date}</TableCell>
               <TableCell className={note.preCafeManhaColor}>
-                {note.preCafeManhaGlic}
+                {note.preCafeManhaGlic ?? '--'}
               </TableCell>
-              <TableCell className={note.preAlmocoColor}>
-                {note.preAlmocoGlic}
-              </TableCell>
+              <TableCell className={note.preAlmocoColor}>{note.preAlmocoGlic ?? '--'}</TableCell>
               <TableCell className={note.preCafeTardeColor}>
-                {note.preCafeTardeGlic}
+                {note.preCafeTardeGlic ?? '--'}
               </TableCell>
-              <TableCell className={note.preJantarColor}>
-                {note.preJantarGlic}
-              </TableCell>
-              <TableCell className={note.preDormirColor}>
-                {note.preDormirGlic}
-              </TableCell>
+              <TableCell className={note.preJantarColor}>{note.preJantarGlic ?? '--'}</TableCell>
+              <TableCell className={note.preDormirColor}>{note.preDormirGlic ?? '--'}</TableCell>
             </TableRow>
-          )
-        })}
-      </TableBody>
-    </Table>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 

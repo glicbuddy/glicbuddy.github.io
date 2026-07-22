@@ -22,7 +22,7 @@ export const Actions = () => {
   const handleChange = (isOpen) => {
     if (!isOpen) {
       setOpen(false)
-      navigate(config.appRoutes.home)
+      navigate(config.appRoutes.home.path)
     }
   }
 
@@ -33,21 +33,24 @@ export const Actions = () => {
           <Button
             variant="secondary"
             className="size-12 mb-3"
-            onClick={() => handleOpen(config.appRoutes.settings)}
+            title={config.appRoutes.settings.label}
+            onClick={() => handleOpen(config.appRoutes.settings.path)}
           >
             <Settings className="size-5" />
           </Button>
           <Button
             variant="secondary"
             className="size-12 mb-3"
-            onClick={() => handleOpen(config.appRoutes.stats)}
+            title={config.appRoutes.stats.label}
+            onClick={() => handleOpen(config.appRoutes.stats.path)}
           >
             <ChartNoAxesCombined className="size-5" />
           </Button>
           <Button
             variant="default"
             className="size-12 mb-3"
-            onClick={() => handleOpen(config.appRoutes.form)}
+            title={config.appRoutes.form.label}
+            onClick={() => handleOpen(config.appRoutes.form.path)}
           >
             <NotebookPen className="size-5" />
           </Button>
