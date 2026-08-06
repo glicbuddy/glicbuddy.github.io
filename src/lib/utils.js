@@ -97,6 +97,9 @@ export async function downloadGlicNotesPDF(notes = []) {
 
   stream.on('finish', () => {
     const url = stream.toBlobURL('application/pdf')
-    window.open(url, '_blank')
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'registros-glicemia.pdf'
+    link.click()
   })
 }
