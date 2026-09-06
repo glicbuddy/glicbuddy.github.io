@@ -6,6 +6,8 @@ const appRoutes = {
 }
 
 export default {
+  limitNotes: 2000,
+  glicRange: { min: 70, max: 180 },
   appName: import.meta.env.VITE_APP_NAME,
   appDescription: import.meta.env.VITE_APP_DESCRIPTION,
   appActions: [appRoutes.form.path, appRoutes.stats.path, appRoutes.settings.path],

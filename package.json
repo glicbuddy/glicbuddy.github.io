@@ -4,6 +4,7 @@
   "description": "App amigo no controle da glicemia",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "vite",
     "build": "vite build",

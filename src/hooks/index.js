@@ -1,2 +1,3 @@
+export * from '@/hooks/use-glic-range'
 export * from '@/hooks/use-notes'
 export * from '@/hooks/use-storage'

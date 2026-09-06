@@ -1,4 +1,5 @@
-import { useStorage } from '@/hooks'
+import config from '@/config'
+import { useGlicRange, useStorage } from '@/hooks'
 import { toMidnightDateTimestamp } from '@/lib/date'
 import { toUnsigned } from '@/lib/number'
 import { getPreGlicPeriodLabel, isValidPreGlicPeriod } from '@/lib/utils'
@@ -7,9 +8,8 @@ import { monotonicFactory } from 'ulid'
 
 const ulid = monotonicFactory()
 
-const LIMIT_NOTES = 2000
-
 export const useNotes = () => {
+  const [glicRange] = useGlicRange()
   const [notes, setNotes] = useStorage('diabete.notes', [])
 
   const sortedNotes = useMemo(() => notes.sort((a, b) => a.date - b.date), [notes])
@@ -54,7 +54,7 @@ export const useNotes = () => {
     }
   }
 
-  const isGlicNormal = (glic = 0) => glic == 0 || (glic > 70 && glic < 180)
+  const isGlicNormal = (glic = 0) => glic == 0 || (glic > glicRange.min && glic < glicRange.max)
 
   const operations = {
     setNotes,
@@ -75,8 +75,9 @@ export const useNotes = () => {
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .reduce(
           (acc, note) => {
-            const color = isGlicNormal(note.glic) ? 'text-gray-400' : 'text-red-300'
-            const colorHex = isGlicNormal(note.glic) ? '#000000' : '#EF4444'
+            const isNormal = isGlicNormal(note.glic)
+            const color = isNormal ? 'text-gray-400' : 'text-red-300'
+            const colorHex = isNormal ? '#000000' : '#EF4444'
             const glic = note.glic > 0 ? `${note.glic} mg/dL` : ''
             const preGlicPeriodData = {
               [`${note.preGlicPeriod}Glic`]: glic,
@@ -104,7 +105,7 @@ export const useNotes = () => {
           .filter(isValidNote)
           .sort((a, b) => new Date(a.date) - new Date(b.date))
           .reverse()
-          .slice(0, LIMIT_NOTES)
+          .slice(0, config.limitNotes)
 
         setNotes(allNotes)
         return true
@@ -124,14 +125,14 @@ export const useNotes = () => {
         }))
         .concat(notes)
         .sort((a, b) => a.date - b.date)
-        .slice(0, LIMIT_NOTES)
+        .slice(0, config.limitNotes)
 
       setNotes(allNotes)
     },
     removeNote: (noteId) => setNotes(notes.filter((note) => note.id !== noteId)),
     prepareNote: (note) => {
-      const isGlicNormal = note.glic == 0 || (note.glic > 70 && note.glic < 180)
-      const color = isGlicNormal ? 'text-gray-400' : 'text-red-300'
+      const isNormal = isGlicNormal(note.glic)
+      const color = isNormal ? 'text-gray-400' : 'text-red-300'
       const insuFastOrBasal = note.insuFast || note.insuBasal
       const insuType = note.insuFast ? 'rápida' : 'basal'
       const glicValue = note.glic ? `${note.glic} mg/dL` : '--'

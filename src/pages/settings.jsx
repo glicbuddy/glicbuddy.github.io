@@ -1,13 +1,17 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { DrawerTitle } from '@/components/ui/drawer'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import config from '@/config'
-import { useNotes } from '@/hooks'
+import { useGlicRange, useNotes } from '@/hooks'
+import { toUnsigned } from '@/lib/number'
 import { ArchiveRestore, History, Trash2 } from 'lucide-react'
 
 export const Settings = () => {
   const [notes, { setNotes, restoreNotes }] = useNotes()
+  const [glicRange, updateRange] = useGlicRange()
 
   const handleBackup = (e) => {
     e.preventDefault()
@@ -62,12 +66,59 @@ export const Settings = () => {
     }
   }
 
+  const handleGlicMinChange = (e) => {
+    const value = toUnsigned(e.target.value)
+    if (value > 0) {
+      handleUpdateRange(value, glicRange.max)
+    }
+  }
+
+  const handleGlicMaxChange = (e) => {
+    const value = toUnsigned(e.target.value)
+    if (value > 0) {
+      handleUpdateRange(glicRange.min, value)
+    }
+  }
+
+  const handleUpdateRange = (min, max) => {
+    try {
+      updateRange(min, max)
+    } catch (error) {
+      alert(error.message)
+    }
+  }
+
   return (
-    <ScrollArea className="h-[300px]">
+    <ScrollArea className="h-75">
       <div className="w-full flex items-top pt-4 px-0 mb-10 justify-center">
         <Card className="w-full pr-2 mx-0 max-w-sm justify-start">
           <CardContent className="px-2">
             <DrawerTitle className="text-center mx-auto mb-4">Configurações</DrawerTitle>
+            <div className="flex gap-6 mb-4 border-b border-border pb-4">
+              <div className="grid gap-2">
+                <Label htmlFor="glic">Glicemia Mínima</Label>
+                <Input
+                  autoFocus
+                  tabIndex={1}
+                  maxLength={3}
+                  onChange={handleGlicMinChange}
+                  type="tel"
+                  className="text-xl font-bold size-10 w-full"
+                  value={glicRange.min}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="carbo">Glicemia Máxima</Label>
+                <Input
+                  tabIndex={2}
+                  maxLength={3}
+                  onChange={handleGlicMaxChange}
+                  type="tel"
+                  className="text-xl font-bold size-10 w-full"
+                  value={glicRange.max}
+                />
+              </div>
+            </div>
             <Button
               variant="secondary"
               className="w-full mb-4"
@@ -75,7 +126,7 @@ export const Settings = () => {
               disabled={!notes.length}
             >
               <Trash2 className="mr-2 size-4" />
-              Apagar dados
+              Limpar dados
             </Button>
             <Button
               variant="secondary"
@@ -84,11 +135,11 @@ export const Settings = () => {
               disabled={!notes.length}
             >
               <History className="mr-2 size-4" />
-              Fazer backup
+              Exportar dados
             </Button>
             <Button variant="secondary" className="w-full mb-4" onClick={handleRestore}>
               <ArchiveRestore className="mr-2 size-4" />
-              Restaurar backup
+              Importar dados
             </Button>
           </CardContent>
         </Card>

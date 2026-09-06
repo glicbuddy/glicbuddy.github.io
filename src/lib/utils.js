@@ -1,8 +1,12 @@
 import config from '@/config'
 import blobStream from 'blob-stream'
 import { clsx } from 'clsx'
-import PDFDocument from 'pdfkit/js/pdfkit.standalone.js'
+import { PDFDocument, registerStdFonts } from 'pdfkit'
+import Helvetica from 'pdfkit/standard-fonts/Helvetica'
+import HelveticaBold from 'pdfkit/standard-fonts/HelveticaBold'
 import { twMerge } from 'tailwind-merge'
+
+registerStdFonts(Helvetica, HelveticaBold)
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs))
