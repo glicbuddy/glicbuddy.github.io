@@ -21,6 +21,7 @@ import { useNotes } from '@/hooks'
 import { PRE_GLIC_PERIODS, downloadGlicNotesPDF } from '@/lib/utils'
 import { CalendarHeart, FileText } from 'lucide-react'
 import { useState } from 'react'
+import { useLocation } from 'react-router'
 
 const ListInsuNotes = () => {
   const [notes, { prepareNote, listNoteDates, listNotesByDate, removeNote }] = useNotes()
@@ -35,7 +36,7 @@ const ListInsuNotes = () => {
   return isEmpty ? (
     <h2 className="text-center my-10">Nenhum registro de insulina</h2>
   ) : (
-    <Accordion type="single" collapsible>
+    <Accordion type="single" collapsible defaultValue={noteDates[0]}>
       {noteDates.map((noteDate) => (
         <AccordionItem value={noteDate} key={noteDate}>
           <AccordionTrigger className="px-4">
@@ -137,9 +138,13 @@ const ListGlicNotes = () => {
 
 export const Notes = () => {
   const [activeTab, setActiveTab] = useState('insulina')
+  const location = useLocation()
 
   return (
-    <div className="w-full flex items-center pb-40 justify-center min-h-screen">
+    <div
+      key={location.pathname}
+      className="w-full flex items-center pb-40 justify-center min-h-screen"
+    >
       <Card className="w-full max-w-sm justify-center mx-auto">
         <Header />
         <CardContent className="p-0">

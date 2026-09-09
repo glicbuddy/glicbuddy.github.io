@@ -12,7 +12,7 @@ export const useNotes = () => {
   const [glicRange] = useGlicRange()
   const [notes, setNotes] = useStorage('diabete.notes', [])
 
-  const sortedNotes = useMemo(() => notes.sort((a, b) => a.date - b.date), [notes])
+  const sortedNotes = useMemo(() => notes.sort((a, b) => a.date - b.date), [notes, glicRange])
 
   const sortedNoteDates = useMemo(() => {
     const noteDates = sortedNotes

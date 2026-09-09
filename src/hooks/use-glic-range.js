@@ -9,19 +9,19 @@ export const useGlicRange = () => {
     const minValue = toUnsigned(min)
     const maxValue = toUnsigned(max)
     if (minValue === 0 || maxValue === 0) {
-      throw new Error('Os valores não podem ser zero.')
+      throw new Error('Não pode ser valor igual a zero.')
     }
     if (minValue < 0 || maxValue < 0) {
-      throw new Error('Os valores não podem ser negativos.')
+      throw new Error('Não pode ser valores negativos.')
     }
     if (minValue === maxValue) {
-      throw new Error('O valor mínimo não pode ser igual ao máximo.')
+      throw new Error('Não pode ser valores iguais.')
     }
     if (minValue > maxValue) {
-      throw new Error('O valor mínimo não pode ser maior que o máximo.')
+      throw new Error('Não pode ser valor mínimo maior que o máximo.')
     }
     if (minValue > 999 || maxValue > 999) {
-      throw new Error('Os valores não podem ser maiores que 999.')
+      throw new Error('Não pode ser valores maiores que 999.')
     }
     setGlicRange({ min: minValue, max: maxValue })
   }

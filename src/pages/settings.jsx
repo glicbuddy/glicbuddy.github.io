@@ -6,12 +6,14 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import config from '@/config'
 import { useGlicRange, useNotes } from '@/hooks'
-import { toUnsigned } from '@/lib/number'
 import { ArchiveRestore, History, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
 export const Settings = () => {
   const [notes, { setNotes, restoreNotes }] = useNotes()
   const [glicRange, updateRange] = useGlicRange()
+  const [glicRangeState, setGlicRangeState] = useState(glicRange)
+  const [glicMessageError, setGlicMessageError] = useState('')
 
   const handleBackup = (e) => {
     e.preventDefault()
@@ -67,24 +69,24 @@ export const Settings = () => {
   }
 
   const handleGlicMinChange = (e) => {
-    const value = toUnsigned(e.target.value)
-    if (value > 0) {
-      handleUpdateRange(value, glicRange.max)
-    }
+    const value = +e.target.value
+    if (Number.isNaN(value)) return
+    setGlicMessageError('')
+    setGlicRangeState({ ...glicRangeState, min: value })
   }
-
   const handleGlicMaxChange = (e) => {
-    const value = toUnsigned(e.target.value)
-    if (value > 0) {
-      handleUpdateRange(glicRange.min, value)
-    }
+    const value = +e.target.value
+    if (Number.isNaN(value)) return
+    setGlicMessageError('')
+    setGlicRangeState({ ...glicRangeState, max: value })
   }
-
-  const handleUpdateRange = (min, max) => {
+  const handleUpdateRange = () => {
     try {
+      const { min, max } = glicRangeState
       updateRange(min, max)
+      setGlicMessageError('')
     } catch (error) {
-      alert(error.message)
+      setGlicMessageError(error.message)
     }
   }
 
@@ -94,28 +96,35 @@ export const Settings = () => {
         <Card className="w-full pr-2 mx-0 max-w-sm justify-start">
           <CardContent className="px-2">
             <DrawerTitle className="text-center mx-auto mb-4">Configurações</DrawerTitle>
+            {glicMessageError && (
+              <p className="mb-4 text-center text-sm text-destructive">* {glicMessageError}</p>
+            )}
             <div className="flex gap-6 mb-4 border-b border-border pb-4">
               <div className="grid gap-2">
-                <Label htmlFor="glic">Glicemia Mínima</Label>
+                <Label htmlFor="glicMin">Glicemia Mínima</Label>
                 <Input
+                  id="glicMin"
                   autoFocus
                   tabIndex={1}
                   maxLength={3}
                   onChange={handleGlicMinChange}
+                  onBlur={handleUpdateRange}
                   type="tel"
                   className="text-xl font-bold size-10 w-full"
-                  value={glicRange.min}
+                  value={glicRangeState.min ?? ''}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="carbo">Glicemia Máxima</Label>
+                <Label htmlFor="glicMax">Glicemia Máxima</Label>
                 <Input
+                  id="glicMax"
                   tabIndex={2}
                   maxLength={3}
                   onChange={handleGlicMaxChange}
+                  onBlur={handleUpdateRange}
                   type="tel"
                   className="text-xl font-bold size-10 w-full"
-                  value={glicRange.max}
+                  value={glicRangeState.max ?? ''}
                 />
               </div>
             </div>
